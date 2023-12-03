@@ -15,15 +15,10 @@ pub fn process(input: &str) -> Result<u32> {
     let result = input
         .iter()
         .filter_map(|game| {
-            if game
-                .cubes
-                .iter()
-                .flatten()
-                .any(|c| c.count > max_by_color(c.color))
-            {
+            let mut all_cubes = game.cubes.iter().flatten();
+            if all_cubes.any(|c| c.count > max_by_color(c.color)) {
                 return None;
             }
-
             Some(game.id)
         })
         .sum();
