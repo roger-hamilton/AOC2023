@@ -1,24 +1,22 @@
 use crate::{parse_input, Card, Result};
 
-fn calc_points(card: &Card) -> u32 {
-    let mut points = 0;
+fn calc_points(card: &Card) -> Option<u32> {
+    let mut points = None;
 
     for num in card.nums.iter() {
         if card.winners.contains(num) {
-            if points == 0 {
-                points = 1;
-            } else {
-                points *= 2;
-            }
+            let p = points.get_or_insert(1);
+            *p *= 2;
         }
     }
-    points
+    // the loop has an extra doubling, so divide by 2
+    points.map(|p| p / 2)
 }
 
 pub fn process(input: &str) -> Result<u32> {
     let input = parse_input(input)?;
 
-    Ok(input.cards.iter().map(calc_points).sum::<u32>())
+    Ok(input.cards.iter().filter_map(calc_points).sum::<u32>())
 }
 
 #[cfg(test)]
