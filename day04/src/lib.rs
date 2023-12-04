@@ -16,7 +16,6 @@ pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 #[derive(Debug)]
 struct Card {
-    id: u32,
     winners: Vec<u32>,
     nums: Vec<u32>,
 }
@@ -30,7 +29,7 @@ type Res<'a, T> = IResult<&'a str, T>;
 
 fn card(input: &str) -> Res<Card> {
     // parse "Card" + any number of spaces + id
-    let (input, id) = preceded(terminated(tag("Card"), space1), complete::u32)(input)?;
+    let (input, _id) = preceded(terminated(tag("Card"), space1), complete::u32)(input)?;
     // parse ":" + any number of spaces
     let (input, _) = terminated(tag(":"), space1)(input)?;
 
@@ -41,7 +40,7 @@ fn card(input: &str) -> Res<Card> {
     let (input, (winners, nums)) =
         separated_pair(num_list(), delimited(space1, tag("|"), space1), num_list())(input)?;
 
-    Ok((input, Card { id, winners, nums }))
+    Ok((input, Card { winners, nums }))
 }
 
 pub fn parse_input(input: &str) -> Result<Input> {
