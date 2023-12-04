@@ -20,6 +20,15 @@ struct Card {
     nums: Vec<u32>,
 }
 
+impl Card {
+    fn winner_count(&self) -> usize {
+        self.nums
+            .iter()
+            .filter(|n| self.winners.contains(n))
+            .count()
+    }
+}
+
 #[derive(Debug)]
 pub struct Input {
     cards: Vec<Card>,
