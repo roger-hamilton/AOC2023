@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::VecDeque;
 
 use crate::{parse_input, Card, Result};
 
@@ -12,21 +12,27 @@ fn calc_matches(card: &Card) -> u32 {
 pub fn process(input: &str) -> Result<u32> {
     let input = parse_input(input)?;
 
-    let mut card_counts = input
-        .cards
-        .iter()
-        .map(|c| (c.id, 1))
-        .collect::<BTreeMap<_, _>>();
+    let mut extra_counts = VecDeque::new();
+
+    let mut total = 0;
 
     for card in input.cards {
         let matches = calc_matches(&card);
-        if let Some(count) = card_counts.get(&card.id).copied() {
-            for i in 1..=matches {
-                card_counts.entry(card.id + i).and_modify(|c| *c += count);
+        let count = 1 + extra_counts.pop_front().unwrap_or(0);
+        total += count;
+        if matches == 0 {
+            continue;
+        }
+        for i in 0..matches {
+            if let Some(e) = extra_counts.get_mut(i as usize) {
+                *e += count;
+            } else {
+                extra_counts.push_back(count);
             }
         }
     }
-    Ok(card_counts.values().sum())
+
+    Ok(total)
 }
 
 #[cfg(test)]
