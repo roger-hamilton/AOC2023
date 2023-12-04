@@ -1,13 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{parse_input, Card, Result};
-
-fn calc_matches(card: &Card) -> u32 {
-    card.nums
-        .iter()
-        .filter(|n| card.winners.contains(n))
-        .count() as u32
-}
+use crate::{parse_input, Result};
 
 pub fn process(input: &str) -> Result<u32> {
     let input = parse_input(input)?;
@@ -17,19 +10,18 @@ pub fn process(input: &str) -> Result<u32> {
     let mut total = 0;
 
     for card in input.cards {
-        let matches = calc_matches(&card);
+        let matches = card.winner_count();
         let count = 1 + extra_counts.pop_front().unwrap_or(0);
-        total += count;
-        if matches == 0 {
-            continue;
-        }
-        for i in 0..matches {
-            if let Some(e) = extra_counts.get_mut(i as usize) {
-                *e += count;
-            } else {
-                extra_counts.push_back(count);
+        if matches > 0 {
+            for i in 0..matches {
+                if let Some(e) = extra_counts.get_mut(i) {
+                    *e += count;
+                } else {
+                    extra_counts.push_back(count);
+                }
             }
         }
+        total += count;
     }
 
     Ok(total)
