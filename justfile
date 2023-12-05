@@ -9,3 +9,5 @@ test day part:
     cargo nextest run -p {{day}} {{part}}
 run day part:
     cargo run -p {{day}} --bin {{part}} -q
+bench day:
+    cargo bench --bench {{day}} >> {{day}}.bench.txt
