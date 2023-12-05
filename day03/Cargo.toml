@@ -9,3 +9,13 @@ edition = "2021"
 itertools = { workspace = true }
 indoc = { workspace = true }
 nom = { workspace = true }
+glam = { workspace = true }
+
+[dev-dependencies]
+divan = { workspace = true }
+
+
+[[bench]]
+name = "day03"
+path = "benches/benchmarks.rs"
+harness = false

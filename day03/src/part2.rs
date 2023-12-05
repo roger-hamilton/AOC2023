@@ -1,81 +1,39 @@
+use glam::IVec2;
 use itertools::Itertools;
 
-use crate::{parse_input, Cell, Input, Result};
+use crate::{parse_input, Result};
 
-fn neighbor_indexes(x: usize, y: usize) -> Vec<(usize, usize)> {
-    let mut result = Vec::new();
-    if x > 0 {
-        if y > 0 {
-            result.push((x - 1, y - 1));
-        }
-        result.push((x - 1, y));
-        result.push((x - 1, y + 1));
-    }
-    if y > 0 {
-        result.push((x, y - 1));
-    }
-    result.push((x, y + 1));
-
-    if y > 0 {
-        result.push((x + 1, y - 1));
-    }
-    result.push((x + 1, y));
-    result.push((x + 1, y + 1));
-
-    result
-}
-
-fn num_at(input: &Input, x: usize, y: usize) -> Option<((usize, usize), u32)> {
-    if let Some(Cell::Num(n)) = input.get(x, y) {
-        let mut n = *n;
-        let mut min = x;
-        if x > 0 {
-            let mut dx = 1;
-            while let Some(Cell::Num(m)) = input.get(x - dx, y) {
-                n += m * (10u32.pow(dx as u32));
-                if dx == x {
-                    break;
-                }
-                dx += 1;
-            }
-            min = x - dx;
-        }
-
-        let mut dx = 1;
-        while let Some(Cell::Num(m)) = input.get(x + dx, y) {
-            n = n * 10 + m;
-            dx += 1;
-        }
-
-        Some(((min, y), n))
-    } else {
-        None
-    }
-}
+static OFFSETS: [IVec2; 8] = [
+    IVec2::new(-1, -1),
+    IVec2::new(0, -1),
+    IVec2::new(1, -1),
+    IVec2::new(-1, 0),
+    IVec2::new(1, 0),
+    IVec2::new(-1, 1),
+    IVec2::new(0, 1),
+    IVec2::new(1, 1),
+];
 
 pub fn process(input: &str) -> Result<u32> {
     let input = parse_input(input)?;
 
-    let mut sum = 0;
-
-    for (y, row) in input.grid.iter().enumerate() {
-        for (x, cell) in row.iter().enumerate() {
-            if let Cell::Sym('*') = cell {
-                // check all neighbors
-                let neighbors = neighbor_indexes(x, y);
-                let n_nums = neighbors
-                    .iter()
-                    .filter_map(|(x, y)| num_at(&input, *x, *y))
-                    .unique()
-                    .collect_vec();
-                if n_nums.len() == 2 {
-                    sum += n_nums[0].1 * n_nums[1].1;
-                }
-            }
-        }
-    }
-
-    Ok(sum)
+    Ok(input
+        .symbols
+        .iter()
+        // only `*`s are gears
+        .filter_map(|(pos, c)| if *c == '*' { Some(*pos) } else { None })
+        .map(|pos| {
+            OFFSETS
+                .iter()
+                .filter_map(|offset| input.numbers.iter().find(move |n| n.pos == *offset + pos))
+                .unique_by(|n| n.id)
+                .map(|n| n.num)
+                .collect_vec()
+        })
+        // gears only have 2 parts
+        .filter(|v| v.len() == 2)
+        .map(|nums| nums.iter().copied().product::<u32>())
+        .sum())
 }
 
 #[cfg(test)]

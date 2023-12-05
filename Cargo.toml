@@ -17,3 +17,5 @@ petgraph = "0.6.4"
 rayon = "1.8.0"
 # inline string literals
 indoc = "2.0.4"
+# benchmarking
+divan = "0.1.4"
