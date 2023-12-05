@@ -19,3 +19,4 @@ rayon = "1.8.0"
 indoc = "2.0.4"
 # benchmarking
 divan = "0.1.4"
+indicatif = { version = "0.17.7", features = ["rayon"] }
