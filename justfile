@@ -11,3 +11,5 @@ run day part:
     cargo run -p {{day}} --bin {{part}} -q
 bench day:
     cargo bench --bench {{day}} >> {{day}}.bench.txt
+crate day:
+    cargo generate --path ./daily-template --name {{day}}
