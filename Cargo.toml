@@ -20,4 +20,12 @@ rayon = "1.8.0"
 indoc = "2.0.4"
 # benchmarking
 divan = "0.1.4"
+# heap profiling
+dhat = "0.3.2"
+# progress bar
 indicatif = { version = "0.17.7", features = ["rayon"] }
+
+
+[profile.dhat]
+inherits = "release"
+debug = 1

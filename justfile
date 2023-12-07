@@ -13,3 +13,5 @@ bench day:
     cargo bench --bench {{day}} >> {{day}}.bench.txt
 crate day:
     cargo generate --path ./daily-template --name {{day}}
+dhat day part:
+    cargo run --profile dhat --features dhat-heap -p {{day}} --bin {{part}}

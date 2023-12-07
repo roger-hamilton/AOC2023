@@ -1,18 +1,9 @@
 use crate::{parse_input, Input, Result};
 
 fn get_location(input: &Input, seed: usize) -> usize {
-    let mut source = "seed".to_string();
-
     let mut target = seed;
-
-    while source != "location" {
-        for map in &input.maps {
-            if map.from == source {
-                target = map.get_destination(target).unwrap();
-                source = map.to.clone();
-                break;
-            }
-        }
+    for map in &input.maps {
+        target = map.get_destination(target).unwrap();
     }
     target
 }

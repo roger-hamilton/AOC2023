@@ -11,3 +11,7 @@ indoc = { workspace = true }
 nom = { workspace = true }
 indicatif = { workspace = true }
 rayon = { workspace = true }
+dhat = { workspace = true }
+
+[features]
+dhat-heap = []

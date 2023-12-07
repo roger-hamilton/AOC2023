@@ -25,8 +25,6 @@ macro_rules! map_range {
 
 #[derive(Debug)]
 struct Map {
-    from: String,
-    to: String,
     map: Vec<MapRange>,
 }
 
@@ -52,13 +50,7 @@ pub struct Input {
 
 fn parse_map(input: &str) -> Result<Map> {
     let mut lines = input.lines();
-    let name_line = lines.next().expect("Group was empty");
-    let name = name_line[0..name_line.len() - 5].to_string();
-    let (from, to) = name
-        .split("-to-")
-        .map(|s| s.to_string())
-        .collect_tuple()
-        .expect("Expected two words");
+    let _name_line = lines.next().expect("Group was empty");
 
     let map = lines
         .map(|l| {
@@ -75,7 +67,7 @@ fn parse_map(input: &str) -> Result<Map> {
         })
         .collect_vec();
 
-    Ok(Map { from, to, map })
+    Ok(Map { map })
 }
 
 pub fn parse_input(input: &str) -> Result<Input> {

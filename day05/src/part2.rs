@@ -1,32 +1,41 @@
-use rayon::iter::{IntoParallelIterator, ParallelIterator};
+use rayon::iter::{ParallelBridge, ParallelIterator};
 
 use crate::*;
+pub struct PairedIter<T, I: Iterator<Item = T>> {
+    iter: I,
+}
+
+impl<T, I: Iterator<Item = T>> Iterator for PairedIter<T, I> {
+    type Item = (T, T);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let first = self.iter.next()?;
+        let second = self.iter.next()?;
+        Some((first, second))
+    }
+}
+
+pub trait Pairable: Iterator {
+    fn pairs(self) -> PairedIter<Self::Item, Self>
+    where
+        Self: Sized,
+    {
+        PairedIter { iter: self }
+    }
+}
+
+impl<T> Pairable for std::slice::Iter<'_, T> {}
 
 pub fn process(input: &str) -> Result<usize> {
     let input = parse_input(input)?;
 
-    let seed_ranges = input
+    let result = input
         .seeds
         .iter()
-        .chunks(2)
-        .into_iter()
-        .map(|s| {
-            let (start, len) = s.collect_tuple().expect("Expected 2 values");
-            *start..(*start + len)
-        })
-        .collect_vec();
-
-    let seed_counts = seed_ranges.iter().map(std::ops::Range::len).sum::<usize>();
-
-    println!("Expanding seeds: {}", seed_counts);
-    let seeds = seed_ranges
-        .iter()
+        .pairs()
+        .par_bridge()
+        .map(|(start, len)| *start..(*start + len))
         .flat_map(|range| range.clone())
-        .collect::<Vec<usize>>();
-
-    println!("Starting search...");
-    let result = seeds
-        .into_par_iter()
         .map(|s| {
             input
                 .maps
