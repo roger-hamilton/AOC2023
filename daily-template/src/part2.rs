@@ -1,4 +1,11 @@
-use crate::{parse_input, Result};
+use crate::Result;
+
+#[derive(Debug)]
+pub struct Input {}
+
+pub fn parse_input(_input: &str) -> Result<Input> {
+    todo!()
+}
 
 pub fn process(input: &str) -> Result<u32> {
     let _input = parse_input(input)?;
