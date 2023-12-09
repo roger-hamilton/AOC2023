@@ -9,3 +9,7 @@ edition = "2021"
 itertools = { workspace = true }
 indoc = { workspace = true }
 nom = { workspace = true }
+dhat = { workspace = true }
+
+[features]
+dhat-heap = []
