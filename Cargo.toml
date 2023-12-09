@@ -24,6 +24,7 @@ divan = "0.1.4"
 dhat = "0.3.2"
 # progress bar
 indicatif = { version = "0.17.7", features = ["rayon"] }
+rstest = "0.18.2"
 
 
 [profile.dhat]
