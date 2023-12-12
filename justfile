@@ -2,7 +2,7 @@ work day part:
     cargo watch -w ./{{day}} \
         -x "clippy -p {{day}}" \
         -x "nextest run -p {{day}} {{part}}" \
-        -x "run -p {{day}} --bin {{part}} -q" 
+        -x "run --profile release -p {{day}} --bin {{part}} -q"
 lint day:
     cargo clippy -p {{day}} -q
 test day part: 
